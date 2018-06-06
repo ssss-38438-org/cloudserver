@@ -11,7 +11,8 @@
     "test-aws": "AWS_ON_AIR=true mocha -t 40000 test/",
     "test-gcp": "mocha -t 40000 test/GCP/",
     "test": "mocha -t 40000 test/",
-    "test-debug": "_mocha -t 40000 test/"
+    "test-debug": "_mocha -t 40000 test/",
+    "test-routes": "mocha -t 40000 test/routes"
   },
   "author": ""
 }

@@ -20,7 +20,7 @@ const metadataAuthCredentials = {
 };
 
 function makeMetadataRequest(params, callback) {
-    const { method, headers, bucket, objectKey, resourceType, authCredentials,
+    const { method, headers, authCredentials,
         requestBody, queryObj, path } = params;
     const options = {
         authCredentials,
@@ -36,7 +36,7 @@ function makeMetadataRequest(params, callback) {
     makeRequest(options, callback);
 }
 
-describe.only('metadata routes with metadata mock backend', () => {
+describe.skip('metadata routes with metadata mock backend', () => {
     before(done => {
         console.log('setting up for metadata route tests');
         httpServer = http.createServer(
