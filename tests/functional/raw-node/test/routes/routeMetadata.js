@@ -20,12 +20,13 @@ const metadataAuthCredentials = {
 };
 
 function makeMetadataRequest(params, callback) {
+    console.log('IP IS', ipAddress);
     const { method, headers, authCredentials,
         requestBody, queryObj, path } = params;
     const options = {
         authCredentials,
-        hostName: ipAddress,
-        port: 9000,
+        hostname: ipAddress,
+        port: 8000,
         method,
         headers,
         path,
@@ -33,10 +34,11 @@ function makeMetadataRequest(params, callback) {
         jsonResponse: true,
         queryObj,
     };
+    console.log('options before sending to makerequest', options);
     makeRequest(options, callback);
 }
 
-describe.skip('metadata routes with metadata mock backend', () => {
+describe.only('metadata routes with metadata mock backend', () => {
     before(done => {
         console.log('setting up for metadata route tests');
         httpServer = http.createServer(
@@ -50,14 +52,29 @@ describe.skip('metadata routes with metadata mock backend', () => {
     });
 
     it('should retrieve list of buckets', done => {
-        makeMetadataRequest({
+        return makeMetadataRequest({
             method: 'GET',
             authCredentials: metadataAuthCredentials,
             path: '/_/metadata/listbuckets/1',
         }, (err, res) => {
-            console.log('ERR IS', err);
-            console.log('RES IS', res);
-            done();
+            assert.error(err);
+            assert.strictEqual(res.body, '["bucket1","bucket2"]');
+            return done();
         });
     });
+    
+    it('should retrieve list of objects from bucket', done => {
+        return makeMetadataRequest({
+            method: 'GET',
+            authCredentials: metadataAuthCredentials,
+            path: '/_/metadata/listobjects/bucket1',
+        }, (err, res) => {
+            assert.error(err);
+            console.log('err is', err);
+            console.log('res is', res);
+            return done();
+        });
+    });
+    
+    it('should retrieve metadata of object')
 });

@@ -46,7 +46,7 @@
         "readonly": true
     },
     "bucketd": {
-        "bootstrap": ["10.100.4.46:9000"]
+        "bootstrap": ["localhost:9000"]
     },
     "vaultd": {
         "host": "localhost",

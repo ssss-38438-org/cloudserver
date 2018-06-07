@@ -53,6 +53,7 @@ function _decodeURI(uri) {
 function makeRequest(params, callback) {
     const { hostname, port, method, queryObj, headers, path,
             authCredentials, requestBody, jsonResponse } = params;
+    console.log('PARAMS in makerequest', params);
     const options = {
         hostname,
         port,
@@ -61,6 +62,7 @@ function makeRequest(params, callback) {
         path: path || '/',
         rejectUnauthorized: false,
     };
+    console.log('options in make request', options);
     const qs = querystring.stringify(queryObj);
 
     if (params.GCP && authCredentials) {

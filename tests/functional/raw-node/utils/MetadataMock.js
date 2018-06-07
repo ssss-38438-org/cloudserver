@@ -103,12 +103,14 @@ const mockLogs = {"info":{"start":1,"cseq":7,"prune":1},"log":[{"db":"friday","m
 
 class MetadataMock {
     onRequest(req, res) {
+        console.log('WE GOT A REQUEST');
         if (req.method !== 'GET') {
             res.writeHead(501);
             return res.end(JSON.stringify({
                 error: 'mock server only supports GET requests',
             }));
         }
+        console.log('req url rn', req.url);
         if (/\/_\/raft_sessions\/[1-8]\/bucket/.test(req.url)) {
             const value = ['bucket1', 'bucket2'];
             res.writeHead(200, { 'content-type': 'application/json' });
