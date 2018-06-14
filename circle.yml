@@ -19,13 +19,18 @@ machine:
     ENABLE_LOCAL_CACHE: true
     REPORT_TOKEN: report-token-1
     REMOTE_MANAGEMENT_DISABLE: 1
+    AZ_REPO: $(lsb_release -cs)
   hosts:
     bucketwebsitetester.s3-website-us-east-1.amazonaws.com: 127.0.0.1
   post:
     - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     - echo "deb https://dl.yarnpkg.com/debian/ stable main" |
       sudo tee /etc/apt/sources.list.d/yarn.list
-    - sudo apt-get update && sudo apt-get install yarn -y
+    - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
+    sudo tee /etc/apt/sources.list.d/azure-cli.list
+    - sudo apt-get install apt-transport-https
+    - sudo apt-get update && sudo apt-get install azure-cli
+    - sudo apt-get install yarn -y
 
 dependencies:
   override:
