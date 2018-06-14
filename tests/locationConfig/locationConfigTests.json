@@ -91,9 +91,9 @@
         "type": "azure",
         "legacyAwsBehavior": true,
         "details": {
-            "azureStorageEndpoint": "https://fakeaccountname.blob.core.fake.net/",
-            "azureStorageAccountName": "fakeaccountname",
-            "azureStorageAccessKey": "Fake00Key001",
+            "azureStorageEndpoint": "http://127.0.0.1:10000/devstoreaccount1/",
+            "azureStorageAccountName": "devstoreaccount1",
+            "azureStorageAccessKey": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
             "bucketMatch": true,
             "azureContainerName": "s3test"
         }
@@ -102,9 +102,9 @@
         "type": "azure",
         "legacyAwsBehavior": true,
         "details": {
-            "azureStorageEndpoint": "https://fakeaccountname2.blob.core.fake.net/",
-            "azureStorageAccountName": "fakeaccountname2",
-            "azureStorageAccessKey": "Fake00Key002",
+            "azureStorageEndpoint": "http://127.0.0.1:10000/devstoreaccount1/",
+            "azureStorageAccountName": "devstoreaccount1",
+            "azureStorageAccessKey": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
             "bucketMatch": true,
             "azureContainerName": "s3test2"
         }
@@ -113,9 +113,9 @@
         "type": "azure",
         "legacyAwsBehavior": true,
         "details": {
-            "azureStorageEndpoint": "https://fakeaccountname.blob.core.fake.net/",
-            "azureStorageAccountName": "fakeaccountname",
-            "azureStorageAccessKey": "Fake00Key001",
+            "azureStorageEndpoint": "http://127.0.0.1:10000/devstoreaccount1/",
+            "azureStorageAccountName": "devstoreaccount1",
+            "azureStorageAccessKey": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
             "bucketMatch": false,
             "azureContainerName": "s3test"
         }
@@ -124,9 +124,9 @@
         "type": "azure",
         "legacyAwsBehavior": true,
         "details": {
-            "azureStorageEndpoint": "https://fakeaccountname.blob.core.fake.net/",
-            "azureStorageAccountName": "fakeaccountname",
-            "azureStorageAccessKey": "Fake00Key123",
+            "azureStorageEndpoint": "http://127.0.0.1:10000/devstoreaccount1/",
+            "azureStorageAccountName": "devstoreaccount1",
+            "azureStorageAccessKey": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
             "bucketMatch": true,
             "azureContainerName": "s3createbucketonfly"
         }
