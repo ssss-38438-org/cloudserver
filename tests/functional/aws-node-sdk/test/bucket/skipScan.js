@@ -33,7 +33,7 @@ function cutAttributes(data) {
 
 const Bucket = `bucket-skip-scan-${Date.now()}`;
 
-describe('Skip scan cases tests', () => {
+describe.only('Skip scan cases tests', () => {
     let s3;
     before(done => {
         const config = getConfig('default', { signatureVersion: 'v4' });
@@ -43,21 +43,27 @@ describe('Skip scan cases tests', () => {
                 if (err) {
                     done(err, data);
                 }
-                /* generating different prefixes every x > STREAK_LENGTH
+                s3.putBucketVersioning({ Bucket, VersioningConfiguration: { Status: 'Enabled' }}, err => {
+                    if (err) {
+                        return done(err);
+                    }
+                    /* generating different prefixes every x > STREAK_LENGTH
                    to force the metadata backends to skip */
-                const x = 120;
-                async.timesLimit(500, 10,
-                                 (n, next) => {
-                                     const o = {};
-                                     o.Bucket = Bucket;
-                                     // eslint-disable-next-line
-                                     o.Key = String.fromCharCode(65 + n / x) +
-                                         '/' + n % x;
-                                     o.Body = '';
-                                     s3.putObject(o, (err, data) => {
-                                         next(err, data);
-                                     });
-                                 }, done);
+                    const x = 120;
+                    async.timesLimit(500, 10,
+                                    (n, next) => {
+                                        const o = {};
+                                        o.Bucket = Bucket;
+                                        // eslint-disable-next-line
+                                        o.Key = String.fromCharCode(65 + n / x) +
+                                            '/' + n % x;
+                                        o.Body = '';
+                                        console.log('OBJECTKEY', o)
+                                        s3.putObject(o, (err, data) => {
+                                            next(err, data);
+                                        });
+                                    }, done);
+                });
             });
     });
     after(done => {
