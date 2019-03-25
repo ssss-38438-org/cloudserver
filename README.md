@@ -2,6 +2,7 @@
 
 ![Zenko CloudServer logo](res/scality-cloudserver-logo.png)
 
+
 [![CircleCI][badgepub]](https://circleci.com/gh/scality/S3)
 [![Scality CI][badgepriv]](http://ci.ironmann.io/gh/scality/S3)
 [![Docker Pulls][badgedocker]](https://hub.docker.com/r/scality/s3server/)
