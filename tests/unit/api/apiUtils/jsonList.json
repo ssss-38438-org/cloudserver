@@ -1,0 +1,31 @@
+{
+    "$": {
+        "xmlns": "http://s3.amazonaws.com/doc/2006-03-01/"
+    },
+    "Part": [
+        {
+            "ETag": [
+                "\"bed3c0a4a1407f584989b4009e9ce33f\""
+            ],
+            "PartNumber": [
+                "1"
+            ]
+        },
+        {
+            "ETag": [
+                "\"bed3c0a4a1407f584989b4009e9ce33f\""
+            ],
+            "PartNumber": [
+                "2"
+            ]
+        },
+        {
+            "ETag": [
+                "\"bed3c0a4a1407f584989b4009e9ce33f\""
+            ],
+            "PartNumber": [
+                "4"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,66 @@
+[
+    {
+        "key": "8e51eecb51ca4caa96dc4ebd51514f2a..|..00001",
+        "value": {
+            "Size": 26214400,
+            "ETag": "bed3c0a4a1407f584989b4009e9ce33f",
+            "LastModified": "2019-04-16T21:17:58.244Z",
+            "Owner": {},
+            "partLocations": [
+                {
+                    "key": "F416D59F1E18E643C2FC850901CE2A599FE93300",
+                    "dataStoreName": "site1",
+                    "dataStoreType": "scality"
+                }
+            ]
+        }
+    },
+    {
+        "key": "8e51eecb51ca4caa96dc4ebd51514f2a..|..00002",
+        "value": {
+            "Size": 26214400,
+            "ETag": "bed3c0a4a1407f584989b4009e9ce33f",
+            "LastModified": "2019-04-16T21:18:03.901Z",
+            "Owner": {},
+            "partLocations": [
+                {
+                    "key": "4E1D21651387FA21C2FC850901CE2A59C5FDE300",
+                    "dataStoreName": "site1",
+                    "dataStoreType": "scality"
+                }
+            ]
+        }
+    },
+    {
+        "key": "8e51eecb51ca4caa96dc4ebd51514f2a..|..00003",
+        "value": {
+            "Size": 26214400,
+            "ETag": "bed3c0a4a1407f584989b4009e9ce33f",
+            "LastModified": "2019-04-16T21:18:07.719Z",
+            "Owner": {},
+            "partLocations": [
+                {
+                    "key": "FCAE3AD0BC170345C2FC850901CE2A59F4C7A100",
+                    "dataStoreName": "site1",
+                    "dataStoreType": "scality"
+                }
+            ]
+        }
+    },
+    {
+        "key": "8e51eecb51ca4caa96dc4ebd51514f2a..|..00004",
+        "value": {
+            "Size": 26214400,
+            "ETag": "bed3c0a4a1407f584989b4009e9ce33f",
+            "LastModified": "2019-04-16T21:18:10.806Z",
+            "Owner": {},
+            "partLocations": [
+                {
+                    "key": "C827AD986EA6CCB3C2FC850901CE2A59FCAED400",
+                    "dataStoreName": "site1",
+                    "dataStoreType": "scality"
+                }
+            ]
+        }
+    }
+]
