@@ -1,0 +1,229 @@
+---
+version: 0.2
+
+branches:
+  feature/*, improvement/*, bugfix/*, w/*, q/*, hotfix/*:
+    stage: pre-merge
+  development/*:
+    stage: post-merge
+
+models:
+  - env: &global-env
+      azurebackend_AZURE_STORAGE_ACCESS_KEY: >-
+        %(secret:azure_storage_access_key)s
+      azurebackend_AZURE_STORAGE_ACCOUNT_NAME: >-
+        %(secret:azure_storage_account_name)s
+      azurebackend_AZURE_STORAGE_ENDPOINT: >-
+        %(secret:azure_storage_endpoint)s
+      azurebackend2_AZURE_STORAGE_ACCESS_KEY: >-
+        %(secret:azure_storage_access_key_2)s
+      azurebackend2_AZURE_STORAGE_ACCOUNT_NAME: >-
+        %(secret:azure_storage_account_name_2)s
+      azurebackend2_AZURE_STORAGE_ENDPOINT: >-
+        %(secret:azure_storage_endpoint_2)s
+      azurebackendmismatch_AZURE_STORAGE_ACCESS_KEY: >-
+        %(secret:azure_storage_access_key)s
+      azurebackendmismatch_AZURE_STORAGE_ACCOUNT_NAME: >-
+        %(secret:azure_storage_account_name)s
+      azurebackendmismatch_AZURE_STORAGE_ENDPOINT: >-
+        %(secret:azure_storage_endpoint)s
+      azurenonexistcontainer_AZURE_STORAGE_ACCESS_KEY: >-
+        %(secret:azure_storage_access_key)s
+      azurenonexistcontainer_AZURE_STORAGE_ACCOUNT_NAME: >-
+        %(secret:azure_storage_account_name)s
+      azurenonexistcontainer_AZURE_STORAGE_ENDPOINT: >-
+        %(secret:azure_storage_endpoint)s
+      azuretest_AZURE_BLOB_ENDPOINT: "%(secret:azure_storage_endpoint)s"
+      b2backend_B2_ACCOUNT_ID: "%(secret:b2backend_b2_account_id)s"
+      b2backend_B2_STORAGE_ACCESS_KEY: >-
+        %(secret:b2backend_b2_storage_access_key)s
+      GOOGLE_SERVICE_EMAIL: "%(secret:gcp_service_email)s"
+      GOOGLE_SERVICE_KEY: "%(secret:gcp_service_key)s"
+      AWS_S3_BACKEND_ACCESS_KEY: "%(secret:aws_s3_backend_access_key)s"
+      AWS_S3_BACKEND_SECRET_KEY: "%(secret:aws_s3_backend_secret_key)s"
+      AWS_S3_BACKEND_ACCESS_KEY_2: "%(secret:aws_s3_backend_access_key_2)s"
+      AWS_S3_BACKEND_SECRET_KEY_2: "%(secret:aws_s3_backend_secret_key_2)s"
+      AWS_GCP_BACKEND_ACCESS_KEY: "%(secret:aws_gcp_backend_access_key)s"
+      AWS_GCP_BACKEND_SECRET_KEY: "%(secret:aws_gcp_backend_secret_key)s"
+      AWS_GCP_BACKEND_ACCESS_KEY_2: "%(secret:aws_gcp_backend_access_key_2)s"
+      AWS_GCP_BACKEND_SECRET_KEY_2: "%(secret:aws_gcp_backend_secret_key_2)s"
+      b2backend_B2_STORAGE_ENDPOINT: "%(secret:b2backend_b2_storage_endpoint)s"
+      gcpbackend2_GCP_SERVICE_EMAIL: "%(secret:gcp2_service_email)s"
+      gcpbackend2_GCP_SERVICE_KEY: "%(secret:gcp2_service_key)s"
+      gcpbackend2_GCP_SERVICE_KEYFILE: /root/.gcp/servicekey
+      gcpbackend_GCP_SERVICE_EMAIL: "%(secret:gcp_service_email)s"
+      gcpbackend_GCP_SERVICE_KEY: "%(secret:gcp_service_key)s"
+      gcpbackendmismatch_GCP_SERVICE_EMAIL: >-
+        %(secret:gcpbackendmismatch_gcp_service_email)s
+      gcpbackendmismatch_GCP_SERVICE_KEY: >-
+        %(secret:gcpbackendmismatch_gcp_service_key)s
+      gcpbackend_GCP_SERVICE_KEYFILE: /root/.gcp/servicekey
+      gcpbackendmismatch_GCP_SERVICE_KEYFILE: /root/.gcp/servicekey
+      gcpbackendnoproxy_GCP_SERVICE_KEYFILE: /root/.gcp/servicekey
+      gcpbackendproxy_GCP_SERVICE_KEYFILE: /root/.gcp/servicekey
+  - env: &file-mem-mpu
+      S3BACKEND: "file"
+      S3VAULT: "mem"
+      MPU_TESTING: "yes"
+  - Git: &clone
+      name: Pull repo
+      repourl: '%(prop:git_reference)s'
+      shallow: True
+      retryFetch: True
+      haltOnFailure: True
+  - ShellCommand: &credentials
+      name: Setup Credentials
+      command: bash eve/workers/build/credentials.bash
+      haltOnFailure: True
+      env: *global-env
+  - ShellCommand: &npm-install
+      name: install modules
+      command: npm install
+      haltOnFailure: True
+  - Upload: &upload-artifacts
+      source: /artifacts
+      urls:
+        - "*"
+  - ShellCommand: &follow-s3-log
+      logfiles:
+        s3:
+          filename: /artifacts/s3.log
+          follow: true
+  - ShellCommand: &add-hostname
+      name: add hostname
+      command: |
+        echo "127.0.0.1 testrequestbucket.localhost" >> /etc/hosts
+        echo \
+        "127.0.0.1 bucketwebsitetester.s3-website-us-east-1.amazonaws.com" \
+        >> /etc/hosts
+      haltOnFailure: True
+
+
+stages:
+  pre-merge:
+    worker:
+      type: local
+    steps:
+      - SetProperty:
+          property: artifacts_name
+          value: "scality-s3-%(prop:buildnumber)s"
+          haltOnFailure: True
+
+      - TriggerStages:
+          name: Launch all workers
+          stage_names:
+            - linting-coverage
+            - file-ft-tests
+          waitForFinish: True
+          haltOnFailure: True
+
+  linting-coverage:
+    worker:
+      type: docker
+      path: eve/workers/build
+      volumes: &default_volumes
+        - '/home/eve/workspace'
+    steps:
+      - Git: *clone
+      - ShellCommand: *npm-install
+      - ShellCommand: *add-hostname
+      - ShellCommand: *credentials
+      - ShellCommand:
+          name: Linting
+          command: |
+            set -ex
+            npm run --silent lint -- --max-warnings 0
+            npm run --silent lint_md
+            flake8 $(git ls-files "*.py")
+            yamllint $(git ls-files "*.yml")
+      - ShellCommand:
+          name: Unit Coverage
+          command: |
+            set -ex
+            unset HTTP_PROXY HTTPS_PROXY NO_PROXY
+            unset http_proxy https_proxy no_proxy
+            mkdir -p $CIRCLE_TEST_REPORTS/unit
+            npm test
+            npm run test_legacy_location
+          env: &shared-vars
+            <<: *global-env
+            CIRCLE_TEST_REPORTS: /tmp
+            CIRCLE_ARTIFACTS: /tmp
+            CI_REPORTS: /tmp
+      - ShellCommand:
+          name: Unit Coverage logs
+          command: find /tmp/unit -exec cat {} \;
+
+  file-ft-tests:
+    worker:
+      type: kube_pod
+      path: eve/workers/pod.yaml
+      images:
+        aggressor: eve/workers/build
+        s3: "."
+      vars:
+        aggressorMemLimit: "3Gi"
+        s3MemLimit: "2Gi"
+        redis: enabled
+        env:
+          <<: *file-mem-mpu
+          <<: *global-env
+    steps:
+      - Git: *clone
+      - ShellCommand: *credentials
+      - ShellCommand: *npm-install
+      - ShellCommand:
+          command: |
+            set -ex
+            bash wait_for_local_port.bash 8000 40
+            npm run ft_test
+          <<: *follow-s3-log
+          env:
+            <<: *file-mem-mpu
+            <<: *global-env
+      - Upload: *upload-artifacts
+
+  post-merge:
+    worker:
+      type: local
+    steps:
+      - Git: *clone
+      - ShellCommand: &docker_login
+          name: Private Registry Login
+          command: >
+            docker login
+            -u '%(secret:private_registry_username)s'
+            -p '%(secret:private_registry_password)s'
+            '%(secret:private_registry_url)s'
+      - ShellCommand:
+          name: Dockerhub Login
+          command: >
+            docker login
+            -u '%(secret:dockerhub_ro_user)s'
+            -p '%(secret:dockerhub_ro_password)s'
+      - SetProperty: &docker_image_name
+          name: Set docker image name property
+          property: docker_image_name
+          value:
+            "%(secret:private_registry_url)s/zenko/cloudserver:\
+            %(prop:commit_short_revision)s"
+      - ShellCommand:
+          name: Build docker image
+          command: >-
+            docker build
+            --no-cache
+            -t %(prop:docker_image_name)s
+            .
+      - ShellCommand:
+          name: Tag images
+          command: |
+            docker tag %(prop:docker_image_name)s zenko/cloudserver:$TAG
+            docker tag %(prop:docker_image_name)s zenko/cloudserver:latest
+          env:
+            TAG: "latest-%(prop:product_version)s"
+      - ShellCommand:
+          name: Push image
+          command: |
+            docker push %(prop:docker_image_name)s
+            docker push zenko/cloudserver:latest-%(prop:product_version)s
+            docker push zenko/cloudserver:latest
