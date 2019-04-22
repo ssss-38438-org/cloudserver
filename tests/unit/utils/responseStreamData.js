@@ -26,7 +26,7 @@ const dataStoreEntry = {
     },
 };
 
-describe('responseStreamData:', () => {
+describe.only('responseStreamData:', () => {
     beforeEach(() => {
         cleanup();
     });
